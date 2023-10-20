@@ -8,7 +8,7 @@ import User from "../components/features/user/User";
 import Educations from './Educations';
 import Awards from "./Awards";
 import Certificates from "./Certificates";
-
+import Projects from './Projects'
 
 function MyPage() {
   const navigate = useNavigate();
@@ -92,6 +92,11 @@ function MyPage() {
             portfolioOwnerId={portfolioOwner.id}
             isEditable={portfolioOwner.id === userState.user?.id}
           />
+
+        <Projects
+            portfolioOwnerId={portfolioOwner.id}
+            isEditable={portfolioOwner.id === userState.user?.id}
+          />  
         </Col>
         
         
