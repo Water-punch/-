@@ -5,7 +5,7 @@ import * as Api from "./api";
 import { loginReducer } from "./reducer";
 
 import Header from "./components/common/Header";
-import { LoginPage, SearchPortfolios, RegisterPage , MyPage } from "./pages";
+import { LoginPage, SearchPortfolios, RegisterPage , MyPage, ProjectDetail} from "./pages";
 
 // import Educations from "./components/education/Educations";
 
@@ -63,7 +63,7 @@ function App() {
             <Route path="/users/:userId" element={<MyPage />} />
             <Route path="/network" element={<SearchPortfolios />} />
             <Route path="*" element={<MyPage />} />
-
+            <Route path="/:userId/projects/detail" element={<ProjectDetail />} />
             
           </Routes>
         </Router>
