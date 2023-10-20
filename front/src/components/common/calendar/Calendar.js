@@ -1,16 +1,22 @@
-import React, { useState } from "react";
+import React  from "react";
 import DatePicker from "react-datepicker";
+import { Controller } from "react-hook-form";
 import "react-datepicker/dist/react-datepicker.css";
 import Form from "react-bootstrap/Form";
 import { ko } from "date-fns/esm/locale";
 
-const Calendar = () => {
-  const [startDate, setStartDate] = useState();
+
+
+const Calendar = ({ getDate, setGetDate }) => {
+
+
   return (
-    <DatePicker 
-    placeholderText="년-월-일"    	
-    selected={startDate}
-      onChange={(date) => setStartDate(date)}
+    <Controller
+    control = {control}
+    render = {({field : {onChange}}) => (
+      <DatePicker 
+      placeholderText="년-월-일"    	
+      onChange={(value,dateString) => onChange(dateString)}
       locale={ko}                   // 한글로 변경
       dateFormat="yyyy년 MM월 dd일" // 시간 포맷 변경
       // label={"년-월-일"}
@@ -20,6 +26,9 @@ const Calendar = () => {
       customInput={		      // 날짜 또는 인풋 커스텀
         <Form.Control  as="textarea"  rows={1}  style={{width:"250px"}}/> 
       }
+      />
+    )}
+
       />
   );
 };

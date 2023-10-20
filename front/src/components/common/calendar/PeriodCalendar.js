@@ -3,17 +3,19 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Form from "react-bootstrap/Form";
 import { ko } from "date-fns/esm/locale";
+import { Container,  Row, Col } from "react-bootstrap";
 
-const PeriodCalendar = () => {
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+const PeriodCalendar = ( {startDate, endDate, setStartDate, setEndDate} ) => {
+
   return (
-   <> 
-    <div>
+    
+    <Container>
+    <Row md = "2">
+    <Col className="d-flex justify-content-center" >
     <DatePicker 
       placeholderText="년-월-일"    	
       isClearable
-     selected={startDate}
+      selected={startDate}
       onChange={(date) => setStartDate(date)}
       locale={ko}                   // 한글로 변경
       dateFormat="yyyy년 MM월 dd일" // 시간 포맷 변경
@@ -22,12 +24,12 @@ const PeriodCalendar = () => {
       startDate={startDate}
       endDate={endDate}
       customInput={		      // 날짜 뜨는 인풋 커스텀
-        <Form.Control as="textarea"  rows={1} style={{width:"250px"}}/> 
+        <Form.Control as="textarea"  rows={1} style={{width:"300px"}}/> 
       }
       />
-      </div>
+    </Col>
 
-      <div>
+    <Col className="d-flex justify-content-center">
       <DatePicker 
       placeholderText="년-월-일"    
       isClearable	
@@ -43,12 +45,14 @@ const PeriodCalendar = () => {
       endDate={endDate}
       minDate={startDate}
       customInput={		      // 날짜 뜨는 인풋 커스텀
-        <Form.Control as="textarea"   rows={1} style={{width:"250px"}}/> 
+        <Form.Control as="textarea"   rows={1} style={{width:"300px"}}/> 
       }
       />
+      </Col>
+    </Row>
 
-      </div>
-      </>
+    </Container>
+
   );
 };
 export default PeriodCalendar;

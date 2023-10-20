@@ -1,39 +1,40 @@
 import React, { useState } from "react";
-import { Button, Form, Col, Row } from "react-bootstrap";
+import { Button, Form, Col, Row, DropdownButton } from "react-bootstrap";
 import * as Api from "../../../api";
-import PeriodCalendar from "../../common/calendar/PeriodCalendar";
-// import PeriodCalendar from "./Period-Calendar";
-// calender의 DatePicker 사용하기 위해서 가져옴
-// import DatePicker from "react-datepicker"; 
-// import Calender from '../calendar/Calendar';
+import DropdownItem from "react-bootstrap/esm/DropdownItem";
 
-function EducationAddForm({ portfolioOwnerId, setEducations, setIsAdding }) {
-  //useState로 title 상태를 생성함.
+
+function EducationAddForm({ portfolioOwnerId, setEducations, setIsAdding , setIsVisibility }) {
+  //useState로 school 상태를 생성함.
   const [school, setSchool] = useState("");
-  //useState로 description 상태를 생성함.
+  //useState로 major 상태를 생성함.
   const [major, setMajor] = useState("");
-  const [graduationStatus, setGraduationStatus] = useState("");
-  // const [calender, setCalender] = useState("");
+  //useState로 educationLevel 상태를 생성함.
+  const [educationlevel, setEducationlevel] = useState("졸업 정보");
+  //useState로 StartDate, endDate 상태를 생성함
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-
+  
     // portfolioOwnerId를 user_id 변수에 할당함.
     const user_id = portfolioOwnerId;
 
-    // "award/create" 엔드포인트로 post요청함.
-    await Api.post("education/create", {
+    // "education/write" 엔드포인트로 post요청함.
+  await Api.post(`${user_id}/educations`, {
       user_id: portfolioOwnerId,
       school,
       major,
-      graduationStatus,
-      // calender,
+      educationlevel,
+      startDate,
+      endDate
     });
 
     // "educationlist/유저id" 엔드포인트로 get요청함.
-    const res = await Api.get("educationlist", user_id);
+    const res = await Api.get(`${user_id}/educations`);
     // awards를 response의 data로 세팅함.
     setEducations(res.data);
     // award를 추가하는 과정이 끝났으므로, isAdding을 false로 세팅함.
@@ -43,79 +44,61 @@ function EducationAddForm({ portfolioOwnerId, setEducations, setIsAdding }) {
   return (
     <>
     <Form onSubmit={handleSubmit}>
-      <Form.Group controlid="formBasicSchool">
+      <Form.Group controlId="formBasicSchool">
+        <Form.Label>학교</Form.Label>
         <Form.Control
           type="text"
-          placeholder="학교"
+          placeholder="학교명을 입력하세요."
           value={school}
           onChange={(e) => setSchool(e.target.value)}
         />
       </Form.Group>
 
-      <Form.Group controlid="formBasicMajor" className="mt-3">
+      <Form.Group controlId="formBasicMajor" className="mt-3">
         <Form.Control
           type="text"
-          placeholder="전공"
+          placeholder="전공/계열을 입력하세요."
           value={major}
           onChange={(e) => setMajor(e.target.value)}
         />
       </Form.Group>
 
-      <Form key={`inline-radio`} controlid="formBasicGraduationStatus" className="mt-3">
-        <Form.Check
-          inline
-          type="radio"
-          value= "재학중"
-          label= "재학중"
-          name="graduationStatus"
-          id= 'graduation1'
-          checked={graduationStatus === "재학중"}
-          onChange={(e) => setGraduationStatus(e.target.value)}
-        />
-        <Form.Check
-          inline
-          type="radio"
-          value= "학사졸업"
-          label= "학사졸업"
-          name="graduationStatus"
-          id= 'graduation2'
-          checked={graduationStatus === "학사졸업"}
-          onChange={(e) => setGraduationStatus(e.target.value)}
-        />
-        <Form.Check
-          inline
-          type="radio"
-          value= "석사졸업"
-          label= "석사졸업"
-          name="graduationStatus"
-          id= 'graduation3'
-          checked={graduationStatus === "석사졸업"}
-          onChange={(e) => setGraduationStatus(e.target.value)}
-        />
-        <Form.Check
-          inline
-          type="radio"
-          value= "박사졸업"
-          label= "박사졸업"
-          name="graduationStatus"
-          id= 'graduation4'
-          checked={graduationStatus === "박사졸업"}
-          onChange={(e) => setGraduationStatus(e.target.value)}
-        />
-      </Form>
-      
-      
-      <Form.Group controlid="formBasicgetsYear" className="mt-3 text-center">
-        학력 기간
-      <PeriodCalendar />
+      <br/>
+      <Form.Group controlId="formBasicEducationLevel">
+          <DropdownButton id="Educationlevel" title={educationlevel} onSelect={(eventKey)=>setEducationlevel(eventKey)}>
+            <DropdownItem eventKey="졸업">졸업</DropdownItem>
+            <DropdownItem eventKey="재학중">재학중</DropdownItem>
+            <DropdownItem eventKey="학사 졸업">학사 졸업</DropdownItem>
+            <DropdownItem eventKey="석사 졸업">석사 졸업</DropdownItem>
+            <DropdownItem eventKey="박사 졸업">박사 졸업</DropdownItem>
+          </DropdownButton>
       </Form.Group>
+      <br/>      
+      
+      <Form.Group controlid="formBasicgetDate" className="mt-3">
+          <Form.Label>입학 일자</Form.Label>
+          <Form.Control
+              type ="Date"
+              value={startDate}
+              onChange={(e)=>setStartDate(e.target.value)}
+          />
+          <br/>
+          <Form.Label>졸업 일자</Form.Label>
+          <Form.Control
+              type ="Date"
+              value={endDate}
+              onChange={(e)=>setEndDate(e.target.value)}
+          />
+        </Form.Group>
 
       <Form.Group as={Row} className="mt-3 text-center">
         <Col sm={{ span: 20 }}>
-          <Button variant="primary" type="submit" className="me-3">
+          <Button variant="primary" type="submit" className="me-3" onClick={()=>setIsVisibility(true)}>
             확인
           </Button>
-          <Button variant="secondary" onClick={() => setIsAdding(false)}>
+          <Button variant="secondary" onClick={() => {
+            setIsAdding(false)
+            setIsVisibility(true)}}>
             취소
           </Button>
         </Col>

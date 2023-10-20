@@ -8,10 +8,11 @@ function Certificates({ portfolioOwnerId, isEditable }) {
   const [certificates, setCertificates] = useState([]);
   //useState로 isAdding 상태를 생성함.
   const [isAdding, setIsAdding] = useState(false);
+  //useState로 isVisibility 상태를 생성함.
+  const [ isVisibility, setIsVisibility ] = useState(true);
 
   useEffect(() => {
-    // "awardlist/유저id"로 GET 요청하고, response의 data로 awards를 세팅함.
-    Api.get("certificatelist", portfolioOwnerId).then((res) => setCertificates(res.data));
+    Api.get(`${portfolioOwnerId}/certificates`).then((res) => setCertificates(res.data));
   }, [portfolioOwnerId]);
 
   return (
@@ -20,24 +21,28 @@ function Certificates({ portfolioOwnerId, isEditable }) {
         <Card.Title>자격증 이력</Card.Title>
         {certificates.map((certificate) => (
           <Certificate
-            key={certificate.id}
-            award={certificate}
-            setAwards={setCertificates}
+            key={certificate._id}
+            certificate={certificate}
+            setCertificates={setCertificates}
             isEditable={isEditable}
+            setIsVisibility={setIsVisibility}
           />
         ))}
-        {isEditable && (
+        {isEditable && isVisibility && (
           <Row className="mt-3 text-center mb-4">
             <Col sm={{ span: 20 }}>
-              <Button onClick={() => setIsAdding(true)}>+</Button>
+              <Button onClick={() => {
+                setIsAdding(true)
+                setIsVisibility(false)}}>+</Button>
             </Col>
           </Row>
         )}
         {isAdding && (
           <CertificateAddForm
             portfolioOwnerId={portfolioOwnerId}
-            setAwards={setCertificates}
+            setCertificates={setCertificates}
             setIsAdding={setIsAdding}
+            setIsVisibility={setIsVisibility}
           />
         )}
       </Card.Body>

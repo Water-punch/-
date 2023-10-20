@@ -5,9 +5,11 @@ function CertificateCard({ certificate, isEditable, setIsEditing }) {
     <Card.Text>
       <Row className="align-items-center">
         <Col>
-          <span>{certificate.title}</span>
+          <span>{certificate.name}</span>
           <br />
-          <span className="text-muted">{certificate.description}</span>
+          <span className="text-muted">{certificate.issuingOrganization}</span>
+          <br/>
+          <span className="text-muted">{certificate.getDate.split('T')[0]}</span>
         </Col>
         {isEditable && (
           <Col xs lg="1">
