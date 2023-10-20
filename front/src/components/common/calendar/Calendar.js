@@ -5,8 +5,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import Form from "react-bootstrap/Form";
 import { ko } from "date-fns/esm/locale";
 
-const Calendar = ({ control }) => {
-  ///const [getDate ,setGetDate] = useState();
+
+
+const Calendar = ({ getDate, setGetDate }) => {
+
 
   return (
     <Controller

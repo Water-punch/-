@@ -5,9 +5,8 @@ import Form from "react-bootstrap/Form";
 import { ko } from "date-fns/esm/locale";
 import { Container,  Row, Col } from "react-bootstrap";
 
-const PeriodCalendar = () => {
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+const PeriodCalendar = ( {startDate, endDate, setStartDate, setEndDate} ) => {
+
   return (
     
     <Container>

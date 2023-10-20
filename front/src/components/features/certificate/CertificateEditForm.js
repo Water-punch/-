@@ -3,12 +3,14 @@ import { Button, Form, Col, Row } from "react-bootstrap";
 import * as Api from "../../../api";
 
 
-function CertificateEditForm({ currentCertificate, setCertificates, setIsEditing }) {
+function CertificateEditForm({ currentCertificate, setCertificates, setIsEditing, setIsVisibility }) {
   //useState로 title 상태를 생성함.
   const [name, setName] = useState(currentCertificate.name);
   //useState로 description 상태를 생성함.
   const [issuingOrganization, setIssuingOrganization] = useState(currentCertificate.issuingOrganization);
-  const [getDate, setGetDate] = useState("")
+  //useState로 getDate 상태를 생성함.
+  const [ getDate, setGetDate ] = useState(currentCertificate.getDate.split('T')[0]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,13 +19,16 @@ function CertificateEditForm({ currentCertificate, setCertificates, setIsEditing
     const user_id = currentCertificate.userId;
 
     // "awards/수상 id" 엔드포인트로 PUT 요청함.
- Api.put(`certificates/${currentCertificate.id}`, {
+    await Api.put(`${user_id}/certificates/${currentCertificate._id}`, {
       user_id,
       name,
       issuingOrganization,
+      getDate,
     });
 
-    const res = await Api.get(`${user_id}/certificates`, user_id);
+    // "awardlist/유저id" 엔드포인트로 GET 요청함.
+    const res = await Api.get(`${user_id}/certificates/${currentCertificate._id}`);
+
     // awards를 response의 data로 세팅함.
     setCertificates(res.data);
     // 편집 과정이 끝났으므로, isEditing을 false로 세팅함.
@@ -41,7 +46,7 @@ function CertificateEditForm({ currentCertificate, setCertificates, setIsEditing
         />
       </Form.Group>
 
-      <Form.Group controlId="formBasicDescription" className="mt-3">
+      <Form.Group controlId="formBasicIssuingOrganization" className="mt-3">
         <Form.Control
           type="text"
           placeholder="상세 내역"
@@ -50,22 +55,23 @@ function CertificateEditForm({ currentCertificate, setCertificates, setIsEditing
         />
       </Form.Group>
 
-      <Form.Group controlId="formBasicgetsDate" className="mt-3 text-left">
-      <Form.Control
-          type="date"
-          placeholder="년-월-일"
-          value={getDate}
-          onChange={(e) => setGetDate(e.target.value)}
+      <Form.Group controlId="formBasicgetDate" className="mt-3 text-center">
+        자격증 획득일
+        <Form.Control
+            type ="Date"
+            value={getDate}
+            onChange={(e)=>setGetDate(e.target.value)}
         />
       </Form.Group>
 
-
       <Form.Group as={Row} className="mt-3 text-center mb-4">
         <Col sm={{ span: 20 }}>
-          <Button variant="primary" type="submit" className="me-3">
+          <Button variant="primary" type="submit" className="me-3" onClick={()=>setIsVisibility(true)}>
             확인
           </Button>
-          <Button variant="secondary" onClick={() => setIsEditing(false)}>
+          <Button variant="secondary" onClick={() => {
+            setIsEditing(false)
+            setIsVisibility(true)}}>
             취소
           </Button>
         </Col>
@@ -75,3 +81,4 @@ function CertificateEditForm({ currentCertificate, setCertificates, setIsEditing
 }
 
 export default CertificateEditForm;
+

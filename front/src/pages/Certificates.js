@@ -8,6 +8,8 @@ function Certificates({ portfolioOwnerId, isEditable }) {
   const [certificates, setCertificates] = useState([]);
   //useState로 isAdding 상태를 생성함.
   const [isAdding, setIsAdding] = useState(false);
+  //useState로 isVisibility 상태를 생성함.
+  const [ isVisibility, setIsVisibility ] = useState(true);
 
   useEffect(() => {
     Api.get(`${portfolioOwnerId}/certificates`).then((res) => setCertificates(res.data));
@@ -19,16 +21,19 @@ function Certificates({ portfolioOwnerId, isEditable }) {
         <Card.Title>자격증 이력</Card.Title>
         {certificates.map((certificate) => (
           <Certificate
-            key={certificate.id}
+            key={certificate._id}
             certificate={certificate}
             setCertificates={setCertificates}
             isEditable={isEditable}
+            setIsVisibility={setIsVisibility}
           />
         ))}
-        {isEditable && (
+        {isEditable && isVisibility && (
           <Row className="mt-3 text-center mb-4">
             <Col sm={{ span: 20 }}>
-              <Button onClick={() => setIsAdding(true)}>+</Button>
+              <Button onClick={() => {
+                setIsAdding(true)
+                setIsVisibility(false)}}>+</Button>
             </Col>
           </Row>
         )}
@@ -37,6 +42,7 @@ function Certificates({ portfolioOwnerId, isEditable }) {
             portfolioOwnerId={portfolioOwnerId}
             setCertificates={setCertificates}
             setIsAdding={setIsAdding}
+            setIsVisibility={setIsVisibility}
           />
         )}
       </Card.Body>
