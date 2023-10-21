@@ -1,11 +1,7 @@
-import { User } from "../db"; // from을 폴더(db) 로 설정 시, 디폴트로 index.js 로부터 import함.
-import { Award } from "../db/models/Award";
+import { Award } from "../db";
 
 class awardService {
-  static async addAward({ user_id, name, organization, getDate, awardInfo }) {
-    // userId: user_id를 통해 찾은 user
-    const userId = await User.findById({ user_id: user_id });
-
+  static async addAward({ userId, name, organization, getDate, awardInfo }) {
     const newAward = {
       userId,
       name,
@@ -13,6 +9,8 @@ class awardService {
       getDate,
       awardInfo,
     };
+    console.log("service >> ", newAward);
+
     // db에 추가
     const createdNewAward = await Award.create({ newAward });
     createdNewAward.errorMessage = null;
@@ -20,19 +18,18 @@ class awardService {
     return createdNewAward;
   }
 
-  static async getAwards({ user_id }) {
-    const findUser = await User.findById({ user_id });
-    const awards = await Award.findByUser(findUser);
+  static async getAwards({ userId }) {
+    const awards = await Award.findByUserId({ userId });
     return awards;
   }
 
-  static async delAwards({ id }) {
-    const awards = await Award.delete({ _id: id });
+  static async delAwards({ _id }) {
+    const awards = await Award.delete({ _id });
     return awards;
   }
 
-  static async updateAwards(id, newValue) {
-    const awards = await Award.update(id, newValue);
+  static async updateAwards({ _id }, { toUpdate }) {
+    const awards = await Award.update({ _id }, { ...toUpdate });
     return awards;
   }
 }
