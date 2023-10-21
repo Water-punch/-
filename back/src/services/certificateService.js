@@ -1,11 +1,8 @@
-import { User } from "../db"; // from을 폴더(db) 로 설정 시, 디폴트로 index.js 로부터 import함.
-import { Certificate } from "../db/models/Certificate";
+import { Certificate } from "../db"; // from을 폴더(db) 로 설정 시, 디폴트로 index.js 로부터 import함.
 
 class certificateService {
-  static async addCertificate({ user_id, name, issuingOrganization, getDate }) {
-    // userId: user_id를 통해 찾은 user
-    const userId = await User.findById({ user_id });
-
+  // 자격증 추가
+  static async addCertificate({ userId, name, issuingOrganization, getDate }) {
     const newCertificate = {
       userId,
       name,
@@ -20,19 +17,21 @@ class certificateService {
     return createdNewCertificate;
   }
 
-  static async getCertificates({ user_id }) {
-    const findUser = await User.findById({ user_id });
-    const certificates = await Certificate.findByUser(findUser);
+  // 자격증 조회
+  static async getCertificates({ userId }) {
+    const certificates = await Certificate.findByUserId({ userId });
     return certificates;
   }
 
+  // 자격증 삭제
   static async delCertificates({ _id }) {
     const certificates = await Certificate.delete({ _id });
     return certificates;
   }
 
-  static async updateCertificates(id, newValue) {
-    const certificates = await Certificate.update(id, newValue);
+  // 자격증 수정
+  static async updateCertificates({ _id, newValue }) {
+    const certificates = await Certificate.update({ _id, newValue });
     return certificates;
   }
 }

@@ -12,6 +12,7 @@ certificateRouter.post(
   async function (req, res, next) {
     try {
       console.log("특정 유저의 자격증 추가 실행");
+
       if (is.emptyObject(req.body)) {
         throw new Error(
           "headers의 Content-Type을 application/json으로 설정해주세요"
@@ -32,7 +33,7 @@ certificateRouter.post(
 
       // 데이터를 db에 추가
       const newCertificate = await certificateService.addCertificate({
-        user_id: userId,
+        userId, //user의 오브젝트 아이디
         name,
         issuingOrganization,
         getDate,
@@ -50,6 +51,7 @@ certificateRouter.post(
 );
 
 // get 요청 : 특정 유저의 자격증 조회
+// 받아온 userId가 어차피 user의 objectId니까 userId로 바로바로 넘김
 certificateRouter.get(
   "/:userId/certificates",
   login_required,
@@ -58,7 +60,7 @@ certificateRouter.get(
       console.log("특정 유저의 자격증 조회 실행");
       const { userId } = req.params;
       const certificates = await certificateService.getCertificates({
-        user_id: userId,
+        userId,
       });
       res.status(201).json(certificates);
     } catch (err) {
@@ -98,8 +100,11 @@ certificateRouter.post(
   async function (req, res, next) {
     try {
       console.log("특정 유저의 자격증 수정 실행");
+
+      // userId: 사용자 _id / id: 자격증 _id
       const { userId, id } = req.params;
       const current_user_id = req.currentUserId;
+
       if (userId !== current_user_id) {
         throw new Error("자격증 수정 권한이 없습니다");
       }
@@ -112,10 +117,10 @@ certificateRouter.post(
       const newValue = { name, issuingOrganization, getDate };
 
       // 데이터를 db에 추가
-      const updatedCertificates = await certificateService.updateCertificates(
-        id,
-        newValue
-      );
+      const updatedCertificates = await certificateService.updateCertificates({
+        _id: id,
+        newValue,
+      });
 
       res.status(201).json(updatedCertificates);
     } catch (err) {

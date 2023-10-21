@@ -6,7 +6,7 @@ class Certificate {
     return createdNewCertificate;
   }
   // Read
-  static async findByUser(userId) {
+  static async findByUserId({ userId }) {
     const certificates = await CertificateModel.find({ userId });
     return certificates;
   }
@@ -15,20 +15,19 @@ class Certificate {
     const certificates = await CertificateModel.findOneAndDelete({ _id });
     return certificates;
   }
-
   // Update
-  static async update(id, newValue) {
-    const filter = { _id: id };
-    const option = { returnOriginal: false };
-
-    const updateData = {
+  static async update({ _id, newValue }) {
+    const filter = { _id };
+    const update = {
       name: newValue.name,
       issuingOrganization: newValue.issuingOrganization,
       getDate: newValue.getDate,
     };
+    const option = { returnOriginal: false };
+
     const updateCertificate = await CertificateModel.findOneAndUpdate(
       filter,
-      updateData,
+      update,
       option
     );
     return updateCertificate;
