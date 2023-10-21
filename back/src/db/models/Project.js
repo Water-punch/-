@@ -3,7 +3,6 @@ import { ProjectModel } from "../schemas/project";
 class Project {
   // 생성
   static async create({ userId, title, content, startDate, endDate }) {
-    console.log("projectcreate", userId, title, content, startDate, endDate);
     const createdNewProject = await ProjectModel.create({
       userId,
       title,
@@ -16,13 +15,13 @@ class Project {
 
   // 조회 (userId : objectId)
   static async findByUserId({ userId }) {
-    const project = await ProjectModel.find({ userId }).populate("userId");
+    const project = await ProjectModel.find({ userId });
     return project;
   }
 
   // 모두 조회
   static async findAll() {
-    const projects = await ProjectModel.find({}).populate("userId");
+    const projects = await ProjectModel.find({});
     return projects;
   }
 
@@ -33,15 +32,24 @@ class Project {
   }
 
   // 수정
-  static async update({ id, fieldToUpdate, newValue }) {
-    const filter = { _id: id };
-    const update = { [fieldToUpdate]: newValue };
+  static async update({ _id }, toUpdate) {
+    const filter = { _id };
     const option = { returnOriginal: false };
-    const updatedProject = await ProjectModel.findOneAndUpdate(
+
+    // newValue 값이 null 인 필드 제거하기
+    let realToUpdate = {};
+    for (let u in toUpdate) {
+      if (toUpdate[u]) {
+        realToUpdate[u] = toUpdate[u];
+      }
+    }
+
+    const updatedProject = await ProjectModel.updateMany(
       filter,
-      update,
+      realToUpdate,
       option
     );
+
     return updatedProject;
   }
 }
