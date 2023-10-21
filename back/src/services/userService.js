@@ -1,5 +1,5 @@
 import { User } from "../db"; // from을 폴더(db) 로 설정 시, 디폴트로 index.js 로부터 import함.
-import bcrypt from "bcrypt";
+import bcrypt, { hash } from "bcrypt";
 import { v4 as uuidv4 } from "uuid";
 import jwt from "jsonwebtoken";
 
@@ -17,8 +17,8 @@ class userAuthService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // id 는 유니크 값 부여
-    const id = uuidv4();
-    const newUser = { id, name, email, password: hashedPassword };
+    // const id = uuidv4();
+    const newUser = { name, email, password: hashedPassword };
 
     // db에 저장
     const createdNewUser = await User.create({ newUser });
@@ -49,17 +49,18 @@ class userAuthService {
     }
 
     // 로그인 성공 -> JWT 웹 토큰 생성
+
     const secretKey = process.env.JWT_SECRET_KEY || "secret-key";
-    const token = jwt.sign({ user_id: user.id }, secretKey);
+    const token = jwt.sign({ user_id: user._id }, secretKey);
 
     // 반환할 loginuser 객체를 위한 변수 설정
-    const id = user.id;
+    // const id = user.id;
     const name = user.name;
     const description = user.description;
 
     const loginUser = {
       token,
-      id,
+      _id: user._id, //테스트를 위해, 임시로 넣어둠.
       email,
       name,
       description,
@@ -74,9 +75,9 @@ class userAuthService {
     return users;
   }
 
-  static async setUser({ user_id, toUpdate }) {
+  static async setUser({ _id }, { toUpdate }) {
     // 우선 해당 id 의 유저가 db에 존재하는지 여부 확인
-    let user = await User.findById({ user_id });
+    let user = await User.findById({ _id });
 
     // db에서 찾지 못한 경우, 에러 메시지 반환
     if (!user) {
@@ -84,36 +85,22 @@ class userAuthService {
       return { errorMessage };
     }
 
-    // 업데이트 대상에 name이 있다면, 즉 name 값이 null 이 아니라면 업데이트 진행
-    if (toUpdate.name) {
-      const fieldToUpdate = "name";
-      const newValue = toUpdate.name;
-      user = await User.update({ user_id, fieldToUpdate, newValue });
-    }
-
-    if (toUpdate.email) {
-      const fieldToUpdate = "email";
-      const newValue = toUpdate.email;
-      user = await User.update({ user_id, fieldToUpdate, newValue });
-    }
-
     if (toUpdate.password) {
-      const fieldToUpdate = "password";
-      const newValue = bcrypt.hash(toUpdate.password, 10);
-      user = await User.update({ user_id, fieldToUpdate, newValue });
+      const hashedPassword = await bcrypt.hash(toUpdate.password, 10);
+      await User.update({ _id }, { password: hashedPassword });
+
+      // 비밀번호 바꾸기 막기
+      // delete toUpdate.password;
+      // const errorMessage = "이페이지에서는 비밀번호를 바꾸실 수 없습니다.";
+      // return { errorMessage };
     }
 
-    if (toUpdate.description) {
-      const fieldToUpdate = "description";
-      const newValue = toUpdate.description;
-      user = await User.update({ user_id, fieldToUpdate, newValue });
-    }
-
-    return user;
+    const updatedUser = await User.update({ _id }, { ...toUpdate });
+    return updatedUser;
   }
 
-  static async getUserInfo({ user_id }) {
-    const user = await User.findById({ user_id });
+  static async getUserInfoById({ _id }) {
+    const user = await User.findById({ _id });
 
     // db에서 찾지 못한 경우, 에러 메시지 반환
     if (!user) {

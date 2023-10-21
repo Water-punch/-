@@ -11,8 +11,8 @@ class User {
     return user;
   }
 
-  static async findById({ user_id }) {
-    const user = await UserModel.findOne({ id: user_id });
+  static async findById({ _id }) {
+    const user = await UserModel.findOne({ _id });
     return user;
   }
 
@@ -21,16 +21,24 @@ class User {
     return users;
   }
 
-  static async update({ user_id, fieldToUpdate, newValue }) {
-    const filter = { id: user_id };
-    const update = { [fieldToUpdate]: newValue };
+  static async update({ _id }, toUpdate) {
+    const filter = { _id };
     const option = { returnOriginal: false };
 
-    const updatedUser = await UserModel.findOneAndUpdate(
+    // toUpdate의 값이 null 인 필드 제거하기
+    let realToUpdate = {};
+    for (let u in toUpdate) {
+      if (toUpdate[u]) {
+        realToUpdate[u] = toUpdate[u];
+      }
+    }
+
+    const updatedUser = await UserModel.updateMany(
       filter,
-      update,
+      realToUpdate,
       option
     );
+
     return updatedUser;
   }
 }
