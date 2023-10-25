@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useReducer, createContext } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import * as Api from "./api";
+import * as Api from "./utils/api";
 import { loginReducer } from "./reducer";
 
-import Header from "./components/Header";
-import LoginForm from "./components/user/LoginForm";
-import Network from "./components/user/Network";
-import RegisterForm from "./components/user/RegisterForm";
-import Portfolio from "./components/Portfolio";
+import Header from "./components/common/Header";
+import { LoginPage, SearchPortfolios, RegisterPage , MyPage, ProjectDetail} from "./pages";
+import ProjectWrapper from "./pages/ProjectWrapper";
+import ProfileWrapper from "./pages/ProfileWrapper";
+import NotFoundPage from "./pages/NotFoundPage";
+// import Educations from "./components/education/Educations";
 
 export const UserStateContext = createContext(null);
 export const DispatchContext = createContext(null);
@@ -58,12 +59,22 @@ function App() {
         <Router>
           <Header />
           <Routes>
-            <Route path="/" exact element={<Portfolio />} />
-            <Route path="/login" element={<LoginForm />} />
-            <Route path="/register" element={<RegisterForm />} />
-            <Route path="/users/:userId" element={<Portfolio />} />
-            <Route path="/network" element={<Network />} />
-            <Route path="*" element={<Portfolio />} />
+          <Route path="/" exact element={<MyPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/users/:userId" element={<MyPage />} />
+            <Route path="/network" element={<SearchPortfolios />} />
+            <Route path="*" element={<MyPage />} />
+            <Route path= "/project" element={ <MyPage/>}/>
+            <Route path= "/profile" element={<MyPage/>}/>
+            <Route path="/projects/:id" element={<ProjectDetail />} />
+
+               
+            <Route><NotFoundPage /></Route>
+            {/* <Route path="/:userId/projects/detail/:id" element={<ProjectDetail />} /> */}
+            {/* <Route path="/:userId/projects" element={<Projects />} /> */}
+
+            
           </Routes>
         </Router>
       </UserStateContext.Provider>

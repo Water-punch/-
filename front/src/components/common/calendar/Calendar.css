@@ -1,0 +1,20 @@
+.react-datepicker__day-name {
+  width: 28px;
+}
+.custom-datepicker{
+  border: 1px solid blue;
+}
+.custom-day {
+  width: 28px;
+  height: 28px;
+  line-height: 1.8;
+  text-align: center;
+}
+.gray-day {
+  color: #aba8b9;
+}
+.selected-day {
+  background: #2E1C8B;
+  border-radius: 50%;
+  font-weight: 700;
+}

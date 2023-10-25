@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { Button, Form, Card, Col, Row } from "react-bootstrap";
-import * as Api from "../../api";
+import * as Api from "../../../utils/api";
+import ImageUpload from "../../../utils/ImageUpload";
 
 function UserEditForm({ user, setIsEditing, setUser }) {
   //useState로 name 상태를 생성함.
   const [name, setName] = useState(user.name);
-  //useState로 email 상태를 생성함.
-  const [email, setEmail] = useState(user.email);
   //useState로 description 상태를 생성함.
   const [description, setDescription] = useState(user.description);
 
@@ -14,9 +13,8 @@ function UserEditForm({ user, setIsEditing, setUser }) {
     e.preventDefault();
 
     // "users/유저id" 엔드포인트로 PUT 요청함.
-    const res = await Api.put(`users/${user.id}`, {
+    const res = await Api.put(`users/${user._id}`, {
       name,
-      email,
       description,
     });
     // 유저 정보는 response의 data임.
@@ -31,6 +29,7 @@ function UserEditForm({ user, setIsEditing, setUser }) {
   return (
     <Card className="mb-2">
       <Card.Body>
+        <ImageUpload user={user}/>
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="useEditName" className="mb-3">
             <Form.Control
@@ -45,8 +44,8 @@ function UserEditForm({ user, setIsEditing, setUser }) {
             <Form.Control
               type="email"
               placeholder="이메일"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={user.email}
+              disabled
             />
           </Form.Group>
 
