@@ -5,34 +5,37 @@ const serverUrl =
   "http://" + window.location.hostname + ":" + backendPortNumber + "/";
 
 async function get(endpoint, params = "") {
+  const token =
+    document.cookie
+      .match("(^|;)\\s*" + "jwtToken" + "\\s*=\\s*([^;]+)")
+      ?.pop() || "";
+  console.log(token);
   try {
     console.log(
       `%cGET 요청 ${serverUrl + endpoint + "/" + params}`,
       "color: #a25cd1;"
     );
-  }
-  catch (err) {
-    console.log('GET 요청에 실패했습니다\n',err);
+  } catch (err) {
+    console.log("GET 요청에 실패했습니다\n", err);
   }
   return axios.get(serverUrl + endpoint + "/" + params, {
     // JWT 토큰을 헤더에 담아 백엔드 서버에 보냄.
-    headers: {
-      Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
+    withCredentials: true,
   });
-
 }
 
 async function post(endpoint, data) {
   const bodyData = JSON.stringify(data);
-  try{
+  try {
     // JSON.stringify 함수: Javascript 객체를 JSON 형태로 변환함.
     // 예시: {name: "Kim"} => {"name": "Kim"}
     console.log(`%cPOST 요청: ${serverUrl + endpoint}`, "color: #296aba;");
     console.log(`%cPOST 요청 데이터: ${bodyData}`, "color: #296aba;");
-  }
-  catch (err) {
-    console.log('POST 요청에 실패했습니다\n',err);
+  } catch (err) {
+    console.log("POST 요청에 실패했습니다\n", err);
   }
 
   return axios.post(serverUrl + endpoint, bodyData, {
@@ -40,6 +43,7 @@ async function post(endpoint, data) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
     },
+    withCredentials: true,
   });
 }
 
@@ -63,14 +67,13 @@ async function postImg(endpoint, data) {
 
 async function put(endpoint, data) {
   const bodyData = JSON.stringify(data);
-  try{
-  // JSON.stringify 함수: Javascript 객체를 JSON 형태로 변환함.
-  // 예시: {name: "Kim"} => {"name": "Kim"}
-  console.log(`%cPUT 요청: ${serverUrl + endpoint}`, "color: #059c4b;");
-  console.log(`%cPUT 요청 데이터: ${bodyData}`, "color: #059c4b;");
-  }
-  catch(err) {
-    console.log('PUT 요청에 실패했습니다\n',err);
+  try {
+    // JSON.stringify 함수: Javascript 객체를 JSON 형태로 변환함.
+    // 예시: {name: "Kim"} => {"name": "Kim"}
+    console.log(`%cPUT 요청: ${serverUrl + endpoint}`, "color: #059c4b;");
+    console.log(`%cPUT 요청 데이터: ${bodyData}`, "color: #059c4b;");
+  } catch (err) {
+    console.log("PUT 요청에 실패했습니다\n", err);
   }
 
   return axios.put(serverUrl + endpoint, bodyData, {
@@ -78,23 +81,24 @@ async function put(endpoint, data) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
     },
+    withCredentials: true,
   });
 }
 
 // 아래 함수명에 관해, delete 단어는 자바스크립트의 reserved 단어이기에,
 // 여기서는 우선 delete 대신 del로 쓰고 아래 export 시에 delete로 alias 함.
 async function del(endpoint, params = "") {
-  try{
+  try {
     console.log(`DELETE 요청 ${serverUrl + endpoint + "/" + params}`);
-  }
-  catch(err) {
-    console.log('DELETE 요청에 실패했습니다\n',err);
+  } catch (err) {
+    console.log("DELETE 요청에 실패했습니다\n", err);
   }
 
   return axios.delete(serverUrl + endpoint + "/" + params, {
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
     },
+    withCredentials: true,
   });
 }
 

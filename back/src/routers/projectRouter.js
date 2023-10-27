@@ -12,6 +12,7 @@ projectRouter.post(
   login_required,
   is_request_body,
   check_permission,
+  check_permission,
   async (req, res, next) => {
     try {
       const { userId } = req.params;
@@ -44,6 +45,7 @@ projectRouter.post(
 projectRouter.get(
   "/:userId/projects",
   login_required,
+  check_permission,
   async (req, res, next) => {
     try {
       const { userId } = req.params;
@@ -87,6 +89,7 @@ projectRouter.delete(
   "/:userId/projects/:id",
   login_required,
   check_permission,
+  check_permission,
   async (req, res, next) => {
     try {
       const id = req.params.id;
@@ -102,6 +105,7 @@ projectRouter.delete(
 projectRouter.post(
   "/:userId/projects/:id",
   login_required,
+  check_permission,
   check_permission,
   async (req, res, next) => {
     try {

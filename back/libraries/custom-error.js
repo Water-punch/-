@@ -14,13 +14,6 @@ class UnauthorizedError extends Error {
   }
 }
 
-// class JsonWebTokenError extends Error {
-//   constructor(message) {
-//     super(message);
-//     this.status = 401;
-//   }
-// }
-
 // 404: 찾고자 하는 Route가 존재하지 않음
 class NotFoundError extends Error {
   constructor(message) {
@@ -50,5 +43,4 @@ export {
   ForbiddenError,
   UnauthorizedError,
   ConflictError,
-  //JsonWebTokenError,
 };

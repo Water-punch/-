@@ -55,7 +55,7 @@ function LoginPage() {
       // 기본 페이지로 이동함.
       navigate("/network", { replace: true });
     } catch (err) {
-      alert('로그인에 실패했습니다.');
+      alert("로그인에 실패했습니다.");
       console.log("로그인에 실패하였습니다.\n", err);
     }
   };
