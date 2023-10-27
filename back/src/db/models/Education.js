@@ -1,6 +1,7 @@
 import { EducationModel } from "../schemas/education";
 
 class Education {
+  // Create
   static async create(newEducation) {
     const createdNewEducation = await EducationModel.create(newEducation);
     return createdNewEducation;
@@ -8,7 +9,6 @@ class Education {
 
   // Read
   static async findByUserId({ userId }) {
-    console.log("userId", userId);
     const education = await EducationModel.find({ userId }).sort({
       startDate: "asc",
     });
@@ -17,8 +17,7 @@ class Education {
 
   //Delete
   static async delete({ _id }) {
-    const result = await EducationModel.findOneAndDelete({ _id });
-    console.log(result);
+    await EducationModel.deleteOne({ _id });
     return;
   }
 
@@ -27,6 +26,7 @@ class Education {
     const filter = { _id };
     const option = { returnOriginal: false };
 
+    // 수정사항이 없는 필드 제외
     let realToUpdate = {};
     for (let u in toUpdate) {
       if (toUpdate[u]) {

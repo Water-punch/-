@@ -9,8 +9,6 @@ class awardService {
       awardedDate,
       Info,
     };
-
-    // db에 추가
     const createdNewAward = await Award.create({ newAward });
     createdNewAward.errorMessage = null;
 
@@ -28,8 +26,8 @@ class awardService {
   }
 
   static async updateAward({ _id }, { toUpdate }) {
-    const awards = await Award.update({ _id }, { ...toUpdate });
-    return awards;
+    const updatedAward = await Award.update({ _id }, { ...toUpdate });
+    return updatedAward;
   }
 }
 

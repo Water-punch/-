@@ -1,4 +1,4 @@
-import { Certificate } from "../db"; // from을 폴더(db) 로 설정 시, 디폴트로 index.js 로부터 import함.
+import { Certificate } from "../db";
 
 class certificateService {
   static async addCertificate({
@@ -13,7 +13,6 @@ class certificateService {
       issuingOrganization,
       certificatedDate,
     };
-    //db에 추가
     const createdNewCertificate = await Certificate.create({ newCertificate });
     createdNewCertificate.errorMessage = null;
     return createdNewCertificate;
@@ -30,8 +29,11 @@ class certificateService {
   }
 
   static async updateCertificate({ _id }, { toUpdate }) {
-    const certificates = await Certificate.update({ _id }, { ...toUpdate });
-    return certificates;
+    const updatedCertificate = await Certificate.update(
+      { _id },
+      { ...toUpdate }
+    );
+    return updatedCertificate;
   }
 }
 

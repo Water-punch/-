@@ -1,4 +1,4 @@
-import { Project } from "../db/index";
+import { Project } from "../db";
 
 class projectService {
   static async addProject({
@@ -25,7 +25,7 @@ class projectService {
     return createdNewProject;
   }
 
-  static async getProjects(userId) {
+  static async getProjects({ userId }) {
     const projects = await Project.findByUserId({ userId });
     return projects;
   }
@@ -35,24 +35,13 @@ class projectService {
     return projects;
   }
 
-  static async getProjectDetail(_id) {
-    const projectDetail = await Project.findByProjectId({ _id });
-    return projectDetail;
-  }
-
-  static async getProjectContent(content) {
-    console.log("service : ", content);
-    const projectContent = await Project.findByContent({ content });
-    return projectContent;
-  }
-
   static async deleteProject({ _id }) {
-    const result = await Project.delete({ _id });
-    return result;
+    const projects = await Project.delete({ _id });
+    return projects;
   }
 
-  static async updateProject({ _id }, toUpdate) {
-    const updatedProject = await Project.update({ _id }, toUpdate);
+  static async updateProject({ _id }, { toUpdate }) {
+    const updatedProject = await Project.update({ _id }, { ...toUpdate });
     return updatedProject;
   }
 }

@@ -1,7 +1,9 @@
 import { CertificateModel } from "../schemas/certificate";
 
 class Certificate {
+  // Create
   static async create({ newCertificate }) {
+    console.log("n ", newCertificate);
     const createdNewCertificate = await CertificateModel.create(newCertificate);
     return createdNewCertificate;
   }
@@ -14,8 +16,7 @@ class Certificate {
   }
   // Delete
   static async delete({ _id }) {
-    const result = await CertificateModel.deleteOne({ _id });
-    console.log(result);
+    await CertificateModel.deleteOne({ _id });
     return;
   }
   // Update
@@ -23,6 +24,7 @@ class Certificate {
     const filter = { _id };
     const option = { returnOriginal: false };
 
+    // 수정사항이 없는 필드 제외
     let realToUpdate = {};
     for (let u in toUpdate) {
       if (toUpdate[u]) {

@@ -1,6 +1,7 @@
 import { ProjectModel } from "../schemas/project";
 
 class Project {
+  // Create
   static async create({
     userId,
     title,
@@ -24,22 +25,8 @@ class Project {
 
   // Read
   static async findByUserId({ userId }) {
-    const project = await ProjectModel.find({ userId })
+    const project = await ProjectModel.find({ userId });
     return project;
-  }
-
-  // Read by ProjectId
-  static async findByProjectId({ _id }) {
-    const projectById = await ProjectModel.find({ _id });
-    return projectById;
-  }
-
-  static async findByContent({ content }) {
-    const projectByContent = await ProjectModel.find({
-      content: { $in: [content] },
-    });
-
-    return projectByContent;
   }
 
   // Read all Project
@@ -50,8 +37,7 @@ class Project {
 
   // Delete
   static async delete({ _id }) {
-    const result = await ProjectModel.deleteOne({ _id });
-    console.log(result);
+    await ProjectModel.deleteOne({ _id });
     return;
   }
 
@@ -60,7 +46,7 @@ class Project {
     const filter = { _id };
     const option = { returnOriginal: false };
 
-    // newValue 값이 null 인 필드 제거하기
+    // 수정사항이 없는 필드 제외
     let realToUpdate = {};
     for (let u in toUpdate) {
       if (toUpdate[u]) {
