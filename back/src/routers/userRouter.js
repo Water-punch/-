@@ -5,8 +5,8 @@ import { is_request_body } from "../middlewares/is_request_body";
 import {
   BadRequestError,
   ConflictError,
-  NotFoundError,
   UnauthorizedError,
+  INVALID_USER_Error,
 } from "../../libraries/custom-error";
 
 const userAuthRouter = Router();
@@ -19,7 +19,7 @@ userAuthRouter.post(
     try {
       const { name, email, password } = req.body;
       if (!name || !email || !password) {
-        throw new BadRequestError("필수적인 값이 입력되지 않았습니다");
+        throw new BadRequestError("필수적인 정보가 입력되지 않았습니다");
       }
       // db에 데이터 추가
       const newUser = await userAuthService.addUser({
@@ -54,10 +54,10 @@ userAuthRouter.post("/user/login", async function (req, res, next) {
 
     if (user.errorMessage) {
       // 존재하지 않는 이메일
-      if (user.errorType === "NotFoundError") {
-        throw new NotFoundError(user.errorMessage);
-      } else if (user.errorType === "UnauthorizedError") {
-        // 비밀번호 불일치
+      if (user.errorType === "INVALID_USER_Error") {
+        throw new INVALID_USER_Error(user.errorMessage);
+      } // 비밀번호 불일치
+      else if (user.errorType === "UnauthorizedError") {
         throw new UnauthorizedError(user.errorMessage);
       } else {
         throw new Error(user.errorMessage);
@@ -70,7 +70,7 @@ userAuthRouter.post("/user/login", async function (req, res, next) {
     );
     res.status(200).send(user);
   } catch (error) {
-    res.send(error);
+    next(error);
   }
 });
 
@@ -87,8 +87,8 @@ userAuthRouter.get(
       });
 
       if (currentUserInfo.errorMessage) {
-        if (currentUserInfo.errorType === "NotFoundError") {
-          throw new NotFoundError(currentUserInfo.errorMessage);
+        if (currentUserInfo.errorType === "INVALID_USER_Error") {
+          throw new INVALID_USER_Error(currentUserInfo.errorMessage);
         } else {
           throw new Error(currentUserInfo.errorMessage);
         }
@@ -119,8 +119,8 @@ userAuthRouter.put(
       const updatedUser = await userAuthService.setUser({ _id }, { toUpdate });
 
       if (updatedUser.errorMessage) {
-        if (updatedUser.errorType === "NotFoundError") {
-          throw new NotFoundError(updatedUser.errorMessage);
+        if (updatedUser.errorType === "INVALID_USER_Error") {
+          throw new INVALID_USER_Error(updatedUser.errorMessage);
         } else {
           throw new Error(updatedUser.errorMessage);
         }
@@ -145,8 +145,8 @@ userAuthRouter.get(
       });
 
       if (currentUserInfo.errorMessage) {
-        if (currentUserInfo.errorType === "NotFoundError") {
-          throw new NotFoundError(currentUserInfo.errorMessage);
+        if (currentUserInfo.errorType === "INVALID_USER_Error") {
+          throw new INVALID_USER_Error(currentUserInfo.errorMessage);
         } else {
           throw new Error(currentUserInfo.errorMessage);
         }
