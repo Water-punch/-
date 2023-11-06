@@ -2,6 +2,7 @@ import { Router } from "express";
 import multer from "multer";
 import { DeleteObjectsCommand, S3Client } from "@aws-sdk/client-s3";
 import multerS3 from "multer-s3";
+import { v4 } from "uuid";
 
 const imageRouter = Router();
 const bucketName = "portfolio-ebak";
@@ -23,7 +24,7 @@ const imageUpload_user = multer({
       if (!["png", "jpg", "jpeg", "gif", "bmp"].includes(extention)) {
         return cb(new Error("이미지 파일이 아닙니다."));
       }
-      cb(null, `User-img/${Date.now() + Math.random()}`);
+      cb(null, `User-img/${v4()}.${extention}`);
     },
   }),
   acl: "public-read",
@@ -39,7 +40,7 @@ const imageUpload_project = multer({
       if (!["png", "jpg", "jpeg", "gif", "bmp"].includes(extention)) {
         return cb(new Error("이미지 파일이 아닙니다."));
       }
-      cb(null, `Project/${Date.now() + Math.random()} `);
+      cb(null, `Project/${v4()}.${extention}`);
     },
   }),
   acl: "public-read",
@@ -81,15 +82,13 @@ imageRouter.post(
 // req의 데이터를 AWS가 요구하는 형식으로 변환
 function getFilename(req, res, next) {
   try {
-    const { imgUrls } = req.body;
+    const { deleteItems } = req.body;
     const urlHead = `https://${bucketName}.s3.ap-northeast-2.amazonaws.com/`;
-
-    let deleteItems = [];
-
-    for (let i = 0; i < imgUrls.length; i++) {
-      deleteItems.push({ Key: imgUrls[i].replace(urlHead, "") });
+    let convert = [];
+    for (let i = 0; i < deleteItems.length; i++) {
+      convert.push({ Key: deleteItems[i].replace(urlHead, "") });
     }
-    req.body.deleteItems = deleteItems;
+    req.body.deleteItems = convert;
 
     next();
   } catch (err) {
@@ -98,9 +97,8 @@ function getFilename(req, res, next) {
 }
 
 // 이미지 삭제 - 프로젝트
-imageRouter.delete("/projects/delete", getFilename, async (req, res, next) => {
+imageRouter.delete("/projects/uploads", getFilename, async (req, res, next) => {
   const { deleteItems } = req.body;
-
   const command = new DeleteObjectsCommand({
     Bucket: bucketName,
     Delete: {
@@ -115,4 +113,5 @@ imageRouter.delete("/projects/delete", getFilename, async (req, res, next) => {
     console.error(err);
   }
 });
+
 export { imageRouter };
