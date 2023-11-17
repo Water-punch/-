@@ -1,0 +1,22 @@
+.Body {
+    margin: 1rem 0rem;
+}
+
+.Mvps {
+    margin: 2rem;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+}
+
+.Cards {
+    margin: 0.5rem;
+    background-color: #f3f1f1;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 1rem;
+}
+
+.TitleText {
+    font-size: 20px;
+    font-weight: bold;
+}
